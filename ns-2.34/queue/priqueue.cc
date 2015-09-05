@@ -92,6 +92,9 @@ PriQueue::recv(Packet *p, Handler *h)
                 case PT_AODV:
                 // AOMDV patch
 		case PT_AOMDV:
+		// BFG patch
+		case PT_BFG:
+    case PT_EPIDEMIC:
 			recvHighPriority(p, h);
                         break;
 

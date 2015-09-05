@@ -160,6 +160,8 @@ private:
         void    format_imep(Packet *p, int offset);
         void    format_aodv(Packet *p, int offset);
 	void    format_aomdv(Packet *p, int offset);
+	void    format_bfg(Packet *p, int offset);
+	void    format_epidemic(Packet *p, int offset);
 
 	// This holds all the tracers added at run-time
 	static PacketTracer *pktTrc_;

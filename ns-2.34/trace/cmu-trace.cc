@@ -61,7 +61,8 @@
 #include "wpan/p802_15_4trace.h"
 #include "wpan/p802_15_4nam.h"
 //</zheng: add for 802.15.4>
-
+#include "bfg/bfg_pkt.h"
+#include "epidemic/epidemic_pkt.h"
 #include "diffusion/diff_header.h" // DIFFUSION -- Chalermek
 
 
@@ -1062,6 +1063,63 @@ CMUTrace::format_aomdv(Packet *p, int offset)
 }
 
 void
+CMUTrace::format_bfg(Packet* p, int offset){
+	struct hdr_bfg *eh = HDR_BFG(p);
+
+	if (pt_->tagged()) {
+		    sprintf(pt_->buffer() + offset,
+			    "-bfg:o %d -bfg:d %d -bfg:s %d -bfg:t %d",
+			    eh->src(),
+	            eh->dst(),
+	            eh->seq_num(),
+	            eh->type());
+		} else if (newtrace_) {
+			sprintf(pt_->buffer() + offset,
+						    "-P bfg -Po %d -Pd %d -Ps %d -Pt %d",
+						    eh->src(),
+				            eh->dst(),
+				            eh->seq_num(),
+				            eh->type());
+		} else {
+			sprintf(pt_->buffer() + offset,
+						    "[bfg %d %d %d %d]",
+						    eh->src(),
+				            eh->dst(),
+				            eh->seq_num(),
+				            eh->type());
+		}
+}
+
+void
+CMUTrace::format_epidemic(Packet* p, int offset){
+	struct hdr_epi *eh = HDR_EPI(p);
+
+	if (pt_->tagged()) {
+		    sprintf(pt_->buffer() + offset,
+			    "-epi:o %d -epi:d %d -epi:s %d -epi:t %d",
+			    eh->src(),
+	            eh->dst(),
+	            eh->seq_num(),
+	            eh->type());
+		} else if (newtrace_) {
+			sprintf(pt_->buffer() + offset,
+						    "-P epi -Po %d -Pd %d -Ps %d -Pt %d",
+						    eh->src(),
+				            eh->dst(),
+				            eh->seq_num(),
+				            eh->type());
+		} else {
+			sprintf(pt_->buffer() + offset,
+						    "[epi %d %d %d %d]",
+						    eh->src(),
+				            eh->dst(),
+				            eh->seq_num(),
+				            eh->type());
+		}
+}
+
+
+void
 CMUTrace::nam_format(Packet *p, int offset)
 {
 	Node* srcnode = 0 ;
@@ -1330,6 +1388,13 @@ void CMUTrace::format(Packet* p, const char *why)
 		// AOMDV patch
 		case PT_AOMDV:
 			format_aomdv(p, offset);
+			break;
+		//BFG patch
+		case PT_BFG:
+			format_bfg(p, offset);
+			break;
+		case PT_EPIDEMIC:
+			format_epidemic(p, offset);
 			break;
 		case PT_TORA:
                         format_tora(p, offset);

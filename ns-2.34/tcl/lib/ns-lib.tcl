@@ -633,6 +633,12 @@ Simulator instproc create-wireless-node args {
 		    AOMDV {
 			    set ragent [$self create-aomdv-agent $node]
 		    }
+		    BFG {
+			    set ragent [$self create-bfg-agent $node]
+            }
+            Epidemic {
+            	set ragent [$self create-epi-agent $node]	
+            }
 		    TORA {
 			    Simulator set IMEPFlag_ ON
 			    set ragent [$self create-tora-agent $node]
@@ -859,6 +865,21 @@ Simulator instproc create-aomdv-agent { node } {
 	$self at 0.0 "$ragent start"
 	$node set ragent_ $ragent
 	return $ragent
+}
+
+#bfg patch
+Simulator instproc create-bfg-agent { node } {
+	set ragent [new Agent/BFG [$node node-addr]]
+	$self at 0.0 "$ragent start"
+	$node set ragent_ $ragent
+	return $ragent 
+}
+
+Simulator instproc create-epi-agent { node } {
+	set ragent [new Agent/Epidemic [$node node-addr]]
+	$self at 0.0 "$ragent start"
+	$node set ragent_ $ragent
+	return $ragent 
 }
 
 Simulator instproc use-newtrace {} {

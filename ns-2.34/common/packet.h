@@ -182,8 +182,13 @@ static const packet_t PT_BLTRACE = 60;
 	// AOMDV packet
 static const packet_t PT_AOMDV = 61;
 
+//BFG patch
+static const packet_t PT_BFG = 62;
+
+static const packet_t PT_EPIDEMIC = 63;
+
         // insert new packet types here
-static packet_t       PT_NTYPE = 62; // This MUST be the LAST one
+static packet_t       PT_NTYPE = 64; // This MUST be the LAST one
 
 enum packetClass
 {
@@ -248,6 +253,8 @@ public:
 		if (type == PT_DSR || 
 		    type == PT_MESSAGE || 
 		    type == PT_TORA || 
+		    type == PT_BFG ||
+		    type == PT_EPIDEMIC ||
 		    type == PT_AODV)
 			return ROUTING;		
 		if (type == PT_TCP || 
@@ -382,6 +389,10 @@ public:
 		
 		// AOMDV patch
 		name_[PT_AOMDV]= "AOMDV";
+
+		//BFG patch
+		name_[PT_BFG] = "BFG";
+		name_[PT_EPIDEMIC] = "Epidemic";
 
 		name_[PT_NTYPE]= "undefined";
 	}

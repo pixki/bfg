@@ -199,7 +199,7 @@ MobileNode::command(int argc, const char*const* argv)
 			tcl.evalf("%s NodeOff", str);
 			tcl.evalf("%s set ragent_", name_);
 			str = tcl.result();
-			tcl.evalf("%s reset-state", str);
+            //tcl.evalf("%s reset-state", str);
 			God::instance()->ComputeRoute();
 		     	return TCL_OK;
 		} else if (strcmp(argv[1], "shutdown") == 0) {
