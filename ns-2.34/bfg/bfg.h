@@ -137,6 +137,7 @@ protected:
 
 
 	/* Funciones de ayuda */
+    void                     print_bloomfilter();
 	void       				 hexDump(const unsigned char* buffer, int size_in_bytes, const char* msg);
 	void                     asciiDump(const unsigned char* buffer, int size_in_bytes, const char* msg);
 

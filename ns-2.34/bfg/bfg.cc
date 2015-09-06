@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm> //std::max()
+#include <mobilenode.h>
 
 int hdr_bfg::offset_;
 
@@ -169,7 +170,7 @@ BFGAgent::command(int argc, const char* const * argv) {
             this->fb_propio_->print_hash_values_for(local_address());
             return TCL_OK;
         }else if(strcasecmp(argv[1], "printBF") == 0){
-            this->fb_tiempo_->print();
+            print_bloomfilter();
             return TCL_OK;
 		}else if(strcasecmp(argv[1], "dump_buffer") == 0){
             dump_buffer();
@@ -325,7 +326,7 @@ BFGAgent::receive_bloom_filter(Packet *p) {
 	hdr_bfg *eh = HDR_BFG(p);
     hdr_cmn *ch = HDR_CMN(p);
 
-    printf("%0.9f _%d_ RXBLF bfg_bytes %d\n", CURRENT_TIME, local_address(), ch->size());
+    printf("%0.9f _%d_ RXBLF bfg_bytes %d {%d}\n", CURRENT_TIME, local_address(), ch->size(), ih->saddr());
     //printf("%0.9f _%d_ PRG Recibiendo Bloom Filter\n", CURRENT_TIME, local_address());
 
     //No se añade la direccion del nuevo vecino, ya que esa información viene en el FB
@@ -780,6 +781,17 @@ BFGAgent::pro_degradacion_periodica(){
 
 
 /*__________________________________________________ FUNCIONES DE AYUDA______________________________________________*/
+
+
+void
+BFGAgent::print_bloomfilter(){
+    MobileNode *mn = (MobileNode*) Node::get_node_by_address(local_address());
+    mn->update_position();
+    double x=mn->X();
+    double y=mn->Y();
+    printf("%0.9f %d %0.3f %0.3f pBFG %s\n", CURRENT_TIME, local_address(), x, y, this->fb_tiempo_->to_string().c_str());
+}
+
 
 void
 BFGAgent::hexDump(const unsigned char* buffer, int size_in_bytes, const char* msg) {

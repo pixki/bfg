@@ -195,16 +195,17 @@ CountingFilter::to_string() const{
     std::stringstream ss;
 
     out.reserve(6*this->buckets() + 10);
-    out.append("[");
+    //out.append("[");
     for(u_int32_t i=0; i<this->buckets_; i++){
         ss << std::setw(2) << std::setfill('0') << this->c_filter[i];
         out += std::string(ss.str());
         ss.str(std::string());
 
         if(i!=(this->buckets_-1))
-            out += ", ";
+            out += " ";
+
     }
-    out += "]";
+    //out += "]";
     return out;
 }
 
