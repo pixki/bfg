@@ -23,6 +23,10 @@
 .cproject
 .project
 .metadata/
+tcl8.4.18/unix/configure
+tk8.4.18/unix/configure
+zlib-1.2.3/Makefile
+zlib-1.2.3/zconf.h
 bin/
 cweb/ctangle
 cweb/cweave
