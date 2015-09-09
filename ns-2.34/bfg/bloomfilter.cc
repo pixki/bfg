@@ -210,7 +210,15 @@ CountingFilter::to_string() const{
 }
 
 
-
+double
+CountingFilter::saturation() const
+{
+    double sat=0.0;
+    for(u_int32_t i =0; i<this->buckets_; i++)
+        sat += (get_counter_at(i) + 0.0 );
+    sat /= (this->maxCount*1.0*this->buckets_);
+    return sat;
+}
 
 void
 print_int32(u_int32_t in)

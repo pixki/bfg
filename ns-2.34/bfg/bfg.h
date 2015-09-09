@@ -108,6 +108,7 @@ protected:
      *  Funciones del protocolo
      */    
     double					 pro_calc_prob(const PacketIdentifier &packet, CountingFilter &cbf);
+    double                   probabilityTo(nsaddr_t dst) const;
     void                     pro_actualiza_bf(CountingFilter &cbf);
     //void                     pro_guarda_bf(nsaddr_t &addr, CountingFilter &cbf);
     void  					 pro_degradacion_periodica();
@@ -137,7 +138,7 @@ protected:
 
 
 	/* Funciones de ayuda */
-    void                     print_bloomfilter();
+    void                     print_bloomfilter(nsaddr_t dst);
 	void       				 hexDump(const unsigned char* buffer, int size_in_bytes, const char* msg);
 	void                     asciiDump(const unsigned char* buffer, int size_in_bytes, const char* msg);
 

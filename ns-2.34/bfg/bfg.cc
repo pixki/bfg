@@ -168,10 +168,7 @@ BFGAgent::command(int argc, const char* const * argv) {
             }
             printf(")\n");
             this->fb_propio_->print_hash_values_for(local_address());
-            return TCL_OK;
-        }else if(strcasecmp(argv[1], "printBF") == 0){
-            print_bloomfilter();
-            return TCL_OK;
+            return TCL_OK;        
 		}else if(strcasecmp(argv[1], "dump_buffer") == 0){
             dump_buffer();
 			return TCL_OK;
@@ -199,6 +196,10 @@ BFGAgent::command(int argc, const char* const * argv) {
             u_int32_t seed = (u_int32_t) atoi(argv[2]);
             CountingFilter::randomkeys_with_seed(seed, BF_HASH_FUNCTIONS);
             //Reconstruct the BloomFilters if needed
+            return TCL_OK;
+        }else if(strcasecmp(argv[1], "bfstatus") == 0){
+            nsaddr_t dst = (nsaddr_t) atoi(argv[2]);
+            print_bloomfilter(dst);
             return TCL_OK;
 		} else if (strcmp(argv[1], "if-queue") == 0) {
 			ifqueue = (PriQueue*) TclObject::lookup(argv[2]);
@@ -738,6 +739,21 @@ BFGAgent::pro_calc_prob(const PacketIdentifier &packet, CountingFilter &Fjt){
     return pr_Dj;
 }
 
+double
+BFGAgent::probabilityTo(nsaddr_t dst) const
+{
+    double pr_Dj = 0.0;
+    std::vector<u_int32_t> indices = this->fb_tiempo_->hash_values_for(dst);
+
+    double suma = 0.0;
+    for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
+        suma += this->fb_tiempo_->get_counter_at(*it);
+    }
+
+    pr_Dj = (double) suma / (BF_HASH_FUNCTIONS * BF_MAX_COUNT * 1.0);
+    return pr_Dj;
+}
+
 /**
  * Una vez que un nodo recibe una actualizacion por parte de otro nodo, se debe actualizar el filtro Bloom interno
  * fb_tiempo_ para que tome en cuenta la informacion que se acaba de recibir.
@@ -784,12 +800,12 @@ BFGAgent::pro_degradacion_periodica(){
 
 
 void
-BFGAgent::print_bloomfilter(){
+BFGAgent::print_bloomfilter(nsaddr_t dst){
     MobileNode *mn = (MobileNode*) Node::get_node_by_address(local_address());
     mn->update_position();
     double x=mn->X();
     double y=mn->Y();
-    printf("%0.9f %d %0.3f %0.3f pBFG %s\n", CURRENT_TIME, local_address(), x, y, this->fb_tiempo_->to_string().c_str());
+    printf("%0.9f %d %0.3f %0.3f pBFG %0.3f %0.3f\n", CURRENT_TIME, local_address(), x, y, probabilityTo(dst), this->fb_tiempo_->saturation());
 }
 
 

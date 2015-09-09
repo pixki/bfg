@@ -158,6 +158,7 @@ public:
     void        decrement_bucket(u_int index);
     void        print()     const;
     std::string to_string() const;
+    double      saturation() const;
 
 
     inline u_int32_t max_count()           const { return this->maxCount;	    }
