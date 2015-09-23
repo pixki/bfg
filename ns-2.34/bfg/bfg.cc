@@ -155,6 +155,9 @@ BFGAgent::command(int argc, const char* const * argv) {
             degradationTimer_.cancel();
             this->proto_enabled_ = false;
             return TCL_OK;
+        }else if(strcasecmp(argv[1], "bfrepr")== 0){
+            print_bfrepr();
+            return TCL_OK;
         }else if(strcasecmp(argv[1], "debug") == 0){
             this->prDebug_=true;
             return TCL_OK;        
@@ -185,7 +188,7 @@ BFGAgent::command(int argc, const char* const * argv) {
 			}
 			return TCL_OK;
 
-		} else if (strcmp(argv[1], "log-target") == 0
+        } else if (strcmp(argv[1], "log-target") == 0
 				|| strcmp(argv[1], "tracetarget") == 0) {
 			logtarget_ = (Trace*) TclObject::lookup(argv[2]);
 			if (logtarget_ == 0)
@@ -465,7 +468,6 @@ BFGAgent::receive_suv(Packet *p){
 
 
     this->seq_num_++;
-
     och->uid() = this->seq_num_;
     och->ptype() = PT_BFG;
     och->direction() = hdr_cmn::DOWN;
@@ -659,7 +661,7 @@ BFGAgent::is_in_buffer(PacketIdentifier pi){
 		   it->src_ == pi.src_ &&
 		   it->src_port_ == pi.dst_port_ &&
            it->seq_num_ == pi.seq_num_)
-			return true;
+            return true;
 	}
 
 	return false;
@@ -752,6 +754,24 @@ BFGAgent::probabilityTo(nsaddr_t dst) const
 
     pr_Dj = (double) suma / (BF_HASH_FUNCTIONS * BF_MAX_COUNT * 1.0);
     return pr_Dj;
+}
+
+void
+BFGAgent::print_bfrepr()
+{
+    std::vector<u_int32_t> v = this->fb_propio_->hash_values_for(local_address());
+    std::stringstream ss;
+    if(!v.empty())
+    {
+        for(size_t i = 0; i < v.size(); ++i)
+        {
+            if(i != 0)
+                ss << ",";
+            ss << v[i];
+        }
+    }
+    std::string s = ss.str();
+    printf("%0.9f _%d_ BF HashKeys: %s\n", CURRENT_TIME, local_address(), s.c_str());
 }
 
 /**

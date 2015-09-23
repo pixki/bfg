@@ -131,6 +131,7 @@ protected:
 	void                     add_identifier_to_buffer(PacketIdentifier p);//Inserta paquetes
 	bool                     is_in_buffer(PacketIdentifier pi);
 	void                     dump_buffer();
+    void                     print_bfrepr();
 
     /* Funciones de cache de contactos  */
     //map<nsaddr_t, double>    contact_cache_;

@@ -63,7 +63,7 @@ inline bool operator<(const PacketIdentifier& left, const PacketIdentifier& righ
 #define  BFG_HDR_LEN 	    12 + (PACKET_ID_SIZE*PACKETS_IN_SUV)   //bytes
 #define  BFG_BFHDR_LEN      12 + BF_SIZE
 
-#define  PROBABILIDAD_DEGRADACION       0.5
+#define  PROBABILIDAD_DEGRADACION       0.75
 #define  FORWARD_THRESHOLD              0.1
 #define  PERIODIC_DEGRADATION_INTERVAL  10.0
 
