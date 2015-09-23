@@ -17,10 +17,10 @@
 
 
 /*     VARIABLES DE LOS FILTROS BLOOM      */
-#define  BF_HASH_FUNCTIONS        4  //k El numero de funciones hash a usar para las operaciones del filtro (k)
-#define  BF_BUCKETS_IN_FILTER    64  //c La cantidad de "buckets" en el filtro, equivalente al num. de bits (m)
-#define  BF_MAX_COUNT            32  //m El valor maximo que puede tomar un "bucket" (c)
-#define  BF_SIZE                 48  //  El tamaño en bytes del array que representa al filtro bloom contador
+#define  BF_HASH_FUNCTIONS        6  // El numero de funciones hash a usar para las operaciones del filtro (k)
+#define  BF_BUCKETS_IN_FILTER    3500// La cantidad de "buckets" en el filtro, equivalente al num. de bits (m)
+#define  BF_MAX_COUNT            32  // El valor maximo que puede tomar un "bucket" (c)
+#define  BF_SIZE                 2625  //  El tamaño en bytes del array que representa al filtro bloom contador
                                         //Se calcula como ceil( (m*B) / 8)
                                         //Donde B=floor(log2(c))+1
                                         //Es igual a CountingFilter::bytes_needed(BF_BUCKETS_IN_FILTER, BF_MAX_COUNT)
@@ -65,7 +65,7 @@ inline bool operator<(const PacketIdentifier& left, const PacketIdentifier& righ
 
 #define  PROBABILIDAD_DEGRADACION       0.5
 #define  FORWARD_THRESHOLD              0.1
-#define  PERIODIC_DEGRADATION_INTERVAL  5.0
+#define  PERIODIC_DEGRADATION_INTERVAL  10.0
 
 
 
