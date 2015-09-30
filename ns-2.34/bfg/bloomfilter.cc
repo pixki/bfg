@@ -129,7 +129,7 @@ CountingFilter::degrada(double tau){
         if(random_val <= tau){
             if(this->c_filter[i] > 0){
                 //cout<<" => F["<<i<<"]-- ";
-                this->c_filter[i]-=8;
+                this->c_filter[i]-=4;
                 //out_filter.set_counter_at(i, cbf.get_counter_at(i) - 1);
             }
         }
