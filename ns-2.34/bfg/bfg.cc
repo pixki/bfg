@@ -194,7 +194,10 @@ BFGAgent::command(int argc, const char* const * argv) {
 			if (logtarget_ == 0)
 				return TCL_ERROR;
 			return TCL_OK;
-
+        }else if(strcasecmp(argv[1], "dbgprobto") == 0){
+            nsaddr_t dst = (nsaddr_t) atoi(argv[2]);
+            debug_probability_to(dst);
+            return TCL_OK;
         }else if(strcasecmp(argv[1], "seed") == 0){
             u_int32_t seed = (u_int32_t) atoi(argv[2]);
             CountingFilter::randomkeys_with_seed(seed, BF_HASH_FUNCTIONS);
@@ -755,6 +758,36 @@ BFGAgent::probabilityTo(nsaddr_t dst) const
     pr_Dj = (double) suma / (BF_HASH_FUNCTIONS * BF_MAX_COUNT * 1.0);
     return pr_Dj;
 }
+
+void
+BFGAgent::debug_probability_to(nsaddr_t dst)
+{
+    double pr_Dj = 0.0;
+    std::vector<u_int32_t> indices = this->fb_tiempo_->hash_values_for(dst);
+    std::stringstream ss;
+    if(!indices.empty())
+    {
+        for(size_t i = 0; i < indices.size(); ++i)
+        {
+            if(i != 0)
+                ss << ",";
+            ss << indices[i];
+        }
+    }
+    std::string s = ss.str();
+    printf("%0.9f _%d_ DBGP ProbabilityTo ID(%d) %s\n", CURRENT_TIME, local_address(), dst, s.c_str());
+
+    double suma = 0.0;
+    for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
+        u_int32_t counter = this->fb_tiempo_->get_counter_at(*it);
+        printf("%0.9f _%d_ DBGP ProbabilityTo BF[%d]=%d/%d\n", CURRENT_TIME, local_address(), *it, counter, BF_MAX_COUNT);
+        suma += counter;
+    }
+    pr_Dj = (double) suma / (BF_HASH_FUNCTIONS * BF_MAX_COUNT * 1.0);
+    printf("%0.9f _%d_ DBGP ProbabilityTo ID(%d) %0.4f\n", CURRENT_TIME, local_address(), dst, pr_Dj);
+}
+
+
 
 void
 BFGAgent::print_bfrepr()
