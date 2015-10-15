@@ -733,13 +733,13 @@ BFGAgent::pro_calc_prob(const PacketIdentifier &packet, CountingFilter &Fjt){
     //D_est es el filtro bloom que contiene la direccion del nodo j
     std::vector<u_int32_t> indices = Fjt.hash_values_for(packet.dst_);
 
-    double suma = 0.0;
+    double producto = 1.0;
     for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
         //cout << "x=" << *it << " , suma=" << suma << " , bucket=" << Fjt.get_counter_at(*it) << endl;
-        suma += Fjt.get_counter_at(*it);
+        producto *= Fjt.get_counter_at(*it);
     }
 
-    pr_Dj = (double) suma / (BF_HASH_FUNCTIONS * BF_MAX_COUNT * 1.0);
+    pr_Dj = (double) producto / std::pow(BF_MAX_COUNT, BF_HASH_FUNCTIONS);
     //cout << "-----------------///// PROBABILIDAD  - " << pr_Dj	<< " -------------------------" << endl;
     return pr_Dj;
 }
@@ -750,12 +750,12 @@ BFGAgent::probabilityTo(nsaddr_t dst) const
     double pr_Dj = 0.0;
     std::vector<u_int32_t> indices = this->fb_tiempo_->hash_values_for(dst);
 
-    double suma = 0.0;
+    double producto = 1.0;
     for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
-        suma += this->fb_tiempo_->get_counter_at(*it);
+        producto *= this->fb_tiempo_->get_counter_at(*it);
     }
 
-    pr_Dj = (double) suma / (BF_HASH_FUNCTIONS * BF_MAX_COUNT * 1.0);
+    pr_Dj = (double) producto / std::pow(BF_MAX_COUNT, BF_HASH_FUNCTIONS);
     return pr_Dj;
 }
 
@@ -777,13 +777,13 @@ BFGAgent::debug_probability_to(nsaddr_t dst)
     std::string s = ss.str();
     printf("%0.9f _%d_ DBGP ProbabilityTo ID(%d) %s\n", CURRENT_TIME, local_address(), dst, s.c_str());
 
-    double suma = 0.0;
+    double producto = 1.0;
     for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
         u_int32_t counter = this->fb_tiempo_->get_counter_at(*it);
         printf("%0.9f _%d_ DBGP ProbabilityTo BF[%d]=%d/%d\n", CURRENT_TIME, local_address(), *it, counter, BF_MAX_COUNT);
-        suma += counter;
+        producto *= counter;
     }
-    pr_Dj = (double) suma / (BF_HASH_FUNCTIONS * BF_MAX_COUNT * 1.0);
+    pr_Dj = (double) producto / std::pow(BF_MAX_COUNT, BF_HASH_FUNCTIONS);
     printf("%0.9f _%d_ DBGP ProbabilityTo ID(%d) %0.4f\n", CURRENT_TIME, local_address(), dst, pr_Dj);
 }
 
