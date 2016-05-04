@@ -747,12 +747,22 @@ BFGAgent::probabilityTo(nsaddr_t dst) const
     double pr_Dj = 0.0;
     std::vector<u_int32_t> indices = this->fb_tiempo_->hash_values_for(dst);
 
+#ifdef PRSUMA
     double suma = 0.0;
     for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
         suma += this->fb_tiempo_->get_counter_at(*it);
     }
 
-    pr_Dj = (double) suma / (BF_HASH_FUNCTIONS * BF_MAX_COUNT * 1.0);
+    pr_Dj = (double) suma / (BF_MAX_COUNT * BF_HASH_FUNCTIONS * 1.0);
+#else
+    double prod = 1.0;
+    for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
+        prod *= this->fb_tiempo_->get_counter_at(*it);
+    }
+
+    pr_Dj = (double) prod / ((double) std::pow(BF_MAX_COUNT, BF_HASH_FUNCTIONS));
+#endif
+
     return pr_Dj;
 }
 

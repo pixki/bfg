@@ -25,7 +25,7 @@ using namespace std;
 #define  JITTER                (Random::uniform()*0.5)
 
 
-#define  HELLO_INTERVAL        9.0               // 2000 ms
+#define  HELLO_INTERVAL        1.0               // 2000 ms
 #define  MaxHelloInterval      (1.25 * HELLO_INTERVAL)
 #define  MinHelloInterval      (0.75 * HELLO_INTERVAL)
 

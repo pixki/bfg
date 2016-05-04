@@ -24,7 +24,7 @@ typedef u_int8_t byte;
 #define FNV_prime_32     16777619
 #define FNV_init         ((u_int32_t)0x811c9dc5)
 
-#define SEED  5413287
+#define SEED  2340
 
 
 class CountingFilter {
