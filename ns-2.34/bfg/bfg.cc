@@ -194,7 +194,10 @@ BFGAgent::command(int argc, const char* const * argv) {
 			if (logtarget_ == 0)
 				return TCL_ERROR;
 			return TCL_OK;
-
+        }else if(strcasecmp(argv[1], "dbgprobto") == 0){
+            nsaddr_t dst = (nsaddr_t) atoi(argv[2]);
+            debug_probability_to(dst);
+            return TCL_OK;
         }else if(strcasecmp(argv[1], "seed") == 0){
             u_int32_t seed = (u_int32_t) atoi(argv[2]);
             CountingFilter::randomkeys_with_seed(seed, BF_HASH_FUNCTIONS);
@@ -730,13 +733,13 @@ BFGAgent::pro_calc_prob(const PacketIdentifier &packet, CountingFilter &Fjt){
     //D_est es el filtro bloom que contiene la direccion del nodo j
     std::vector<u_int32_t> indices = Fjt.hash_values_for(packet.dst_);
 
-    double suma = 0.0;
+    double producto = 1.0;
     for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
         //cout << "x=" << *it << " , suma=" << suma << " , bucket=" << Fjt.get_counter_at(*it) << endl;
-        suma += Fjt.get_counter_at(*it);
+        producto *= Fjt.get_counter_at(*it);
     }
 
-    pr_Dj = (double) suma / (BF_HASH_FUNCTIONS * BF_MAX_COUNT * 1.0);
+    pr_Dj = (double) producto / std::pow(BF_MAX_COUNT, BF_HASH_FUNCTIONS);
     //cout << "-----------------///// PROBABILIDAD  - " << pr_Dj	<< " -------------------------" << endl;
     return pr_Dj;
 }
@@ -747,12 +750,17 @@ BFGAgent::probabilityTo(nsaddr_t dst) const
     double pr_Dj = 0.0;
     std::vector<u_int32_t> indices = this->fb_tiempo_->hash_values_for(dst);
 
+<<<<<<< HEAD
 #ifdef PRSUMA
     double suma = 0.0;
+=======
+    double producto = 1.0;
+>>>>>>> 4a84a048582b45c72cab28c90670f52481412cb1
     for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
-        suma += this->fb_tiempo_->get_counter_at(*it);
+        producto *= this->fb_tiempo_->get_counter_at(*it);
     }
 
+<<<<<<< HEAD
     pr_Dj = (double) suma / (BF_MAX_COUNT * BF_HASH_FUNCTIONS * 1.0);
 #else
     double prod = 1.0;
@@ -763,8 +771,41 @@ BFGAgent::probabilityTo(nsaddr_t dst) const
     pr_Dj = (double) prod / ((double) std::pow(BF_MAX_COUNT, BF_HASH_FUNCTIONS));
 #endif
 
+=======
+    pr_Dj = (double) producto / std::pow(BF_MAX_COUNT, BF_HASH_FUNCTIONS);
+>>>>>>> 4a84a048582b45c72cab28c90670f52481412cb1
     return pr_Dj;
 }
+
+void
+BFGAgent::debug_probability_to(nsaddr_t dst)
+{
+    double pr_Dj = 0.0;
+    std::vector<u_int32_t> indices = this->fb_tiempo_->hash_values_for(dst);
+    std::stringstream ss;
+    if(!indices.empty())
+    {
+        for(size_t i = 0; i < indices.size(); ++i)
+        {
+            if(i != 0)
+                ss << ",";
+            ss << indices[i];
+        }
+    }
+    std::string s = ss.str();
+    printf("%0.9f _%d_ DBGP ProbabilityTo ID(%d) %s\n", CURRENT_TIME, local_address(), dst, s.c_str());
+
+    double producto = 1.0;
+    for (std::vector<u_int32_t>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
+        u_int32_t counter = this->fb_tiempo_->get_counter_at(*it);
+        printf("%0.9f _%d_ DBGP ProbabilityTo BF[%d]=%d/%d\n", CURRENT_TIME, local_address(), *it, counter, BF_MAX_COUNT);
+        producto *= counter;
+    }
+    pr_Dj = (double) producto / std::pow(BF_MAX_COUNT, BF_HASH_FUNCTIONS);
+    printf("%0.9f _%d_ DBGP ProbabilityTo ID(%d) %0.4f\n", CURRENT_TIME, local_address(), dst, pr_Dj);
+}
+
+
 
 void
 BFGAgent::print_bfrepr()

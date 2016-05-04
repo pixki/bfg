@@ -122,7 +122,7 @@ CountingFilter::degrada(double tau){
         result.print();
         cout<<".........................................................."<<endl;
     #endif
-
+    /*
     for(u_int32_t i= 0; i < this->buckets_; i++){
         random_val = (rand() % 100) / 100.0;
         //cout<<"RanVal: "<<random_val <<" ; PrD: " << PROBABILIDAD_DEGRADACION;
@@ -136,6 +136,14 @@ CountingFilter::degrada(double tau){
         //cout<<endl;
     }
 
+    */
+    for(u_int32_t i= 0; i < this->buckets_; i++)
+    {
+        if(this->c_filter[i] > 0)
+        {
+            this->c_filter[i]-=1;
+        }
+    }
     #ifdef DBG_DEGRAD
         cout<<"cbf:";
         cbf.print();

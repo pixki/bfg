@@ -140,6 +140,7 @@ protected:
 
 	/* Funciones de ayuda */
     void                     print_bloomfilter(nsaddr_t dst);
+    void                     debug_probability_to(nsaddr_t dst);
 	void       				 hexDump(const unsigned char* buffer, int size_in_bytes, const char* msg);
 	void                     asciiDump(const unsigned char* buffer, int size_in_bytes, const char* msg);
 
